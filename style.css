@@ -1,0 +1,63 @@
+body {
+    display: flex;
+    background-color: rgb(248, 173, 112);
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.login {
+    background-color: white;
+    padding: 30px;
+    border-radius: 20px;
+    max-width: fit-content;
+}
+.login h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid lightgray;
+    padding-bottom: 10px;
+}
+.login .info {
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.login .info input {
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    border-bottom: 2px solid lightgray;
+    width: 300px;
+}
+.login .buttons{
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.login .buttons .forgot {
+    text-align: left;
+    text-decoration: none;
+    color: rgb(39, 39, 39);
+    margin-top: 3px;
+}
+.login .buttons .forgot:hover {
+    text-decoration: underline;
+}
+.login .buttons .login-btn{
+    background-color: rgb(248, 173, 112);
+    border-radius: 20px;
+    height: 47px;
+    font-size: 20px;
+    border: none;
+    transition: transform 0.3s ease; 
+}
+.login .buttons .login-btn:hover {
+    background-color: rgb(250, 182, 130);
+    cursor: pointer;
+    transform: scale(1.05);
+}
