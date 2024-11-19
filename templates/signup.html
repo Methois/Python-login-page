@@ -1,0 +1,30 @@
+<!-- signup.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup page - Methois</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+</head>
+<body>
+    <div class="signup">
+        <h1>Create an Account</h1>
+        <form method="POST" action="/signup">
+            <label for="email">E-mail adres</label>
+            <input type="email" id="email" name="E-mail adres" required>
+            <br>
+            <label for="wachtwoord">Wachtwoord</label>
+            <input type="password" id="wachtwoord" name="Wachtwoord" required>
+            <br>
+            <label for="confirm_password">Bevestig Wachtwoord</label>
+            <input type="password" id="confirm_password" name="Confirm Wachtwoord" required>
+            <br>
+            <button type="submit">Maak Account</button>
+        </form>
+        <form class="buttons">
+            <p>Already have an account? <a href="/">Login</a></p>
+        </form>
+    </div>
+</body>
+</html>
