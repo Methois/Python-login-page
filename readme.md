@@ -4,14 +4,13 @@
 
 | **Backlog**                             | **To Do**                         | **In Progress**                  | **Done**                         |
 |-----------------------------------------|-----------------------------------|----------------------------------|----------------------------------|
-| - [ ] Design basic login page (HTML/CSS)|                                   |                                  |✅                                |
-| - [ ] Design Signup page (HTML/CSS)     |                                   |🟡                                  |                                  |
-| - [ ] Design forgot pass page (HTML/CSS)|  🟢                                |                                  |                                  |
-| - [ ] Add login functionality (Django)  |                                 |   🟡                               |                                  |
+| - [ ] Design Signup page (HTML/CSS)     |                                   |   | ✅  |
+| - [ ] Implement login functionality (Flask)  |                                   |         |   ✅                               |
 | - [ ] Implement form validation         | 🟢                                |                                  |                                  |
-| - [ ] Learn API integration             | 🟢                                |                                  |                                  |
 | - [ ] Improve styling with CSS          | 🟢                                |                                  |                                  |
 | - [ ] Secure login measures             | 🟢                                |                                  |                                  |
+| - [ ] Dashboard Page            | 🟢                                |                                  |                                  |
+| - [ ] Register page            | 🟢                                |                                  |                                  |
 
 ---
 
