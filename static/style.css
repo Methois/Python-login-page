@@ -1,63 +1,87 @@
+/* Algemene stijlen */
 body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
     display: flex;
-    background-color: rgb(248, 173, 112);
-    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
-}
-.login {
-    background-color: white;
-    padding: 30px;
-    border-radius: 20px;
-    max-width: fit-content;
-}
-.login h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    border-bottom: 1px solid lightgray;
-    padding-bottom: 10px;
-}
-.login .info {
-    margin-right: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.login .info input {
-    margin-top: 10px;
-    padding: 10px;
-    border: none;
-    border-bottom: 2px solid lightgray;
-    width: 300px;
-}
-.login .buttons{
-    margin-right: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
 }
 
-.login .info .forgot {
-    text-align: left;
-    text-decoration: none;
-    color: rgb(39, 39, 39);
-    margin-top: 3px;
+.login {
+    background-color: white;
+    width: 400px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-.login .info .forgot:hover {
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+/* Formulierstijl */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input:focus {
+    border-color: #5b9bd5;
+    outline: none;
+}
+
+button {
+    padding: 10px;
+    background-color: #5b9bd5;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4a8ac7;
+}
+
+p {
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+    color: #5b9bd5;
+    font-weight: bold;
+}
+
+a:hover {
     text-decoration: underline;
 }
-.login .info .login-btn{
-    background-color: rgb(248, 173, 112);
-    border-radius: 20px;
-    height: 47px;
-    font-size: 20px;
-    border: none;
-    transition: transform 0.3s ease; 
-}
-.login .info .login-btn:hover {
-    background-color: rgb(250, 182, 130);
-    cursor: pointer;
-    transform: scale(1.05);
+
+/* Responsive stijlen voor kleinere schermen */
+@media (max-width: 480px) {
+    .login {
+        width: 100%;
+        padding: 15px;
+    }
 }
