@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login page - Methois</title>
+    <link rel="stylesheet" href="./static/style.css">
+</head>
+<body>
+    <div class="login">
+        <h1>Login</h1>
+        <form method="POST" action="/login">
+            <label for="email">E-mail adres</label>
+            <input type="email" id="email" name="E-mail adres" required>
+            <br>
+            <label for="wachtwoord">Wachtwoord</label>
+            <input type="password" id="wachtwoord" name="Wachtwoord" required>
+            <br>
+            <button type="submit">Login</button>
+        </form>        
+        <form class="buttons">
+            <p>Dont have an account? <a href="signup.html">Sing up</a></p>
+        </form>
+    </div>
+</body>
+</html>
