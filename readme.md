@@ -7,10 +7,10 @@
 | - [ ] Design Signup page (HTML/CSS)     |                                   |   | ✅  |
 | - [ ] Implement login functionality (Flask)  |                                   |         |   ✅                               |
 | - [ ] Implement form validation         | 🟢                                |                                  |                                  |
-| - [ ] Improve styling with CSS          | 🟢                                |                                  |                                  |
+| - [ ] Improve styling with CSS          |                                 | 🟡                                 |                                  |
 | - [ ] Secure login measures             | 🟢                                |                                  |                                  |
-| - [ ] Dashboard Page            | 🟢                                |                                  |                                  |
-| - [ ] Register page            | 🟢                                |                                  |                                  |
+| - [ ] Dashboard Page            |                                 |                                  |✅                                  |
+| - [ ] signup page            |                                 |                                  |✅                                  |
 
 ---
 
