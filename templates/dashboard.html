@@ -9,9 +9,24 @@
 <body>
     <div class="container">
         <h2>Welcome to your dashboard</h2>
-        <p>you're Logged in with the following e-mail adress <strong>{{ email }}</strong></p>
-        <br>
-        <a href="{{ url_for('logout') }}" class="logout-button">Uitloggen</a>
+        <p>You are logged in with the following e-mail address: <strong>{{ email }}</strong></p>
+        
+        <hr>
+
+        <h3>Change Password</h3>
+        <form method="POST" action="/change_password">
+            <label for="old_password">Current Password:</label>
+            <input type="password" id="old_password" name="old_password" required>
+
+            <label for="new_password">New Password:</label>
+            <input type="password" id="new_password" name="new_password" required>
+
+            <button type="submit">Update Password</button>
+        </form>
+
+        <hr>
+
+        <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
     </div>
 </body>
 </html>
