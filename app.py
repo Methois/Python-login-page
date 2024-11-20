@@ -91,5 +91,70 @@ def logout():
     session.clear()  
     return redirect(url_for('login'))
 
+@app.route('/admin', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        # Controleer admin-gegevens
+        if username == 'admin' and password == 'admin':
+            session['admin'] = True
+            return redirect(url_for('admin_dashboard'))
+        else:
+            return "Invalid admin credentials, try again."
+    return render_template('admin_login.html')
+
+# Route voor het admin-dashboard
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    if not session.get('admin'):
+        return redirect(url_for('admin_login'))
+
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, naam, wachtwoord FROM gebruikers WHERE naam != 'admin'")
+    users = cursor.fetchall()
+    conn.close()
+
+    return render_template('admin_dashboard.html', users=users)
+
+# Route voor het wijzigen van wachtwoorden door de admin
+@app.route('/admin/change_password/<int:user_id>', methods=['POST'])
+def admin_change_password(user_id):
+    if not session.get('admin'):
+        return redirect(url_for('admin_login'))
+
+    new_password = request.form['new_password']
+
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute("UPDATE gebruikers SET wachtwoord = ? WHERE id = ?", (new_password, user_id))
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('admin_dashboard'))
+
+
+# Route voor het verwijderen van gebruikers
+@app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
+def delete_user(user_id):
+    if not session.get('admin'):
+        return redirect(url_for('admin_login'))
+
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM gebruikers WHERE id = ?", (user_id,))
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('admin_dashboard'))
+
+# Admin logout
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin', None)
+    return redirect(url_for('admin_login'))
+
 if __name__ == '__main__':
     app.run(debug=True)

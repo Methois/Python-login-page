@@ -12,7 +12,7 @@
 | - [ ] Dashboard Page            |                                 |                                  |✅                                  |
 | - [ ] signup page            |                                 |                                  |✅                                  |
 | - [ ] Change password in dashboard            |                                 |                                  |✅                                  |
-| - [ ] Admin panel            |🟢                                 |                                  |                                  |
+| - [ ] Admin panel            |                                 |  🟡                                |                                  |
 
 ---
 
