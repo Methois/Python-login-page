@@ -6,13 +6,15 @@
 |-----------------------------------------|-----------------------------------|----------------------------------|----------------------------------|
 | - [ ] Design Signup page (HTML/CSS)     |                                   |   | ✅  |
 | - [ ] Implement login functionality (Flask)  |                                   |         |   ✅                               |
-| - [ ] Implement form validation         |                                 | 🟡                                 |                                  |
+| - [ ] Implement form validation         |                                 |                                  | ✅                                 |
 | - [ ] Improve styling with CSS          |                                 |                                  | ✅                                 |
 | - [ ] Secure login measures             |                                 |                                  | ✅                                 |
 | - [ ] Dashboard Page            |                                 |                                  |✅                                  |
 | - [ ] signup page            |                                 |                                  |✅                                  |
 | - [ ] Change password in dashboard            |                                 |                                  |✅                                  |
-| - [ ] Admin panel            |                                 |  🟡                                |                                  |
+| - [ ] Admin panel            |                                 |                                  | ✅                                 |
+| - [ ] option to Create multiple admin accounts           |🟢                                 |                                  |                                  |
+| - [ ] option to change password on admin account        |🟢                                 |                                  |                                  |
 
 ---
 

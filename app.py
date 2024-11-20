@@ -2,15 +2,34 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import secrets
+import re  # Voor reguliere expressies (voor e-mailvalidatie)
 
 app = Flask(__name__)
 
 app.secret_key = secrets.token_hex(16)
 
+def validate_email(email):
+    """Validatie voor een geldig e-mailadres"""
+    email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    return re.match(email_regex, email)
+
+def validate_password(password):
+    """Validatie voor een sterk wachtwoord"""
+    if len(password) < 8:
+        return False
+    if not any(char.isdigit() for char in password):
+        return False
+    if not any(char.islower() for char in password):
+        return False
+    if not any(char.isupper() for char in password):
+        return False
+    return True
+
 @app.route('/', methods=['GET'])
 def login():
     return render_template('login.html')
 
+@app.route('/login', methods=['POST'])
 @app.route('/login', methods=['POST'])
 def handle_login():
     email = request.form['E-mail adres']
@@ -27,7 +46,10 @@ def handle_login():
         session['email'] = email
         return redirect(url_for('dashboard'))
     else:
-        return "Invalid credentials, try again."
+        # Voeg foutmelding toe aan template
+        error_message = "Invalid credentials, try again."
+        return render_template('login.html', error_message=error_message)
+
     
 @app.route('/signup', methods=['GET'])
 def signup():
@@ -40,7 +62,9 @@ def handle_signup():
     confirm_password = request.form['Confirm Wachtwoord']
 
     if password != confirm_password:
-        return "Wachtwoorden komen niet overeen, probeer het opnieuw."
+        # Foutmelding voor niet-overeenkomende wachtwoorden
+        error_message = "Wachtwoorden komen niet overeen, probeer het opnieuw."
+        return render_template('signup.html', error_message=error_message)
 
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
@@ -48,7 +72,9 @@ def handle_signup():
     cursor.execute("SELECT * FROM gebruikers WHERE naam = ?", (email,))
     existing_user = cursor.fetchone()
     if existing_user:
-        return "Dit e-mailadres is al geregistreerd."
+        # Foutmelding voor bestaand e-mailadres
+        error_message = "Dit e-mailadres is al geregistreerd."
+        return render_template('signup.html', error_message=error_message)
 
     hashed_password = generate_password_hash(password)
 
@@ -56,6 +82,7 @@ def handle_signup():
     conn.commit()
 
     return redirect(url_for('login'))
+
 
 @app.route('/dashboard')
 def dashboard():
@@ -74,6 +101,10 @@ def change_password():
     old_password = request.form['old_password']
     new_password = request.form['new_password']
 
+    # Wachtwoordsterkte validatie voor nieuw wachtwoord
+    if not validate_password(new_password):
+        return "Het nieuwe wachtwoord is te zwak. Zorg voor een wachtwoord met minimaal 8 tekens, een hoofdletter, een kleine letter en een cijfer."
+
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
@@ -88,7 +119,7 @@ def change_password():
         return redirect(url_for('dashboard'))
     else:
         conn.close()
-        return "Incorrect current password. Try again."
+        return "Oud wachtwoord is incorrect. Probeer het opnieuw."
 
 @app.route('/logout')
 def logout():
@@ -133,10 +164,9 @@ def admin_login():
             session['admin'] = True
             return redirect(url_for('admin_dashboard'))
         else:
-            return "Invalid admin credentials, try again."
+            return "Ongeldige admin-inloggegevens, probeer het opnieuw."
 
     return render_template('admin_login.html')
-
 
 @app.route('/admin/dashboard')
 def admin_dashboard():
@@ -157,6 +187,11 @@ def admin_change_password(user_id):
         return redirect(url_for('admin_login'))
 
     new_password = request.form['new_password']
+    
+    # Wachtwoordsterkte validatie voor admin
+    if not validate_password(new_password):
+        return "Het nieuwe wachtwoord is te zwak. Zorg voor een wachtwoord met minimaal 8 tekens, een hoofdletter, een kleine letter en een cijfer."
+    
     hashed_new_password = generate_password_hash(new_password)
 
     conn = sqlite3.connect('database.db')

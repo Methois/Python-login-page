@@ -20,6 +20,11 @@
             <label for="confirm_password">Bevestig Wachtwoord</label>
             <input type="password" id="confirm_password" name="Confirm Wachtwoord" required>
             <br>
+
+            {% if error_message %}
+            <p style="color: red;">{{ error_message }}</p>
+        {% endif %}
+        
             <button type="submit">Maak Account</button>
         </form>
         <form class="buttons">
