@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
+import secrets
 
 app = Flask(__name__)
 
-app.secret_key = 'je-geheime-sleutel'
+app.secret_key = secrets.token_hex(16)
 
-# Route voor de loginpagina (GET)
 @app.route('/', methods=['GET'])
 def login():
     return render_template('login.html')
@@ -18,19 +19,19 @@ def handle_login():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM gebruikers WHERE naam = ? AND wachtwoord = ?", (email, password))
-    user = cursor.fetchone() 
+    cursor.execute("SELECT * FROM gebruikers WHERE naam = ?", (email,))
+    user = cursor.fetchone()
 
-    if user:
-        session['user_id'] = user[0] 
-        session['email'] = email 
-        return redirect(url_for('dashboard')) 
+    if user and check_password_hash(user[2], password):
+        session['user_id'] = user[0]
+        session['email'] = email
+        return redirect(url_for('dashboard'))
     else:
-        return "Invalid credentials, try again." 
+        return "Invalid credentials, try again."
     
 @app.route('/signup', methods=['GET'])
 def signup():
-    return render_template('signup.html') 
+    return render_template('signup.html')
 
 @app.route('/signup', methods=['POST'])
 def handle_signup():
@@ -49,7 +50,9 @@ def handle_signup():
     if existing_user:
         return "Dit e-mailadres is al geregistreerd."
 
-    cursor.execute("INSERT INTO gebruikers (naam, wachtwoord) VALUES (?, ?)", (email, password))
+    hashed_password = generate_password_hash(password)
+
+    cursor.execute("INSERT INTO gebruikers (naam, wachtwoord) VALUES (?, ?)", (email, hashed_password))
     conn.commit()
 
     return redirect(url_for('login'))
@@ -58,14 +61,14 @@ def handle_signup():
 def dashboard():
     if 'user_id' in session:
         email = session['email']
-        return render_template('dashboard.html', email=email) 
+        return render_template('dashboard.html', email=email)
     else:
         return redirect(url_for('login'))
-    
+
 @app.route('/change_password', methods=['POST'])
 def change_password():
     if 'email' not in session:
-        return redirect(url_for('login')) 
+        return redirect(url_for('login'))
 
     email = session['email']
     old_password = request.form['old_password']
@@ -74,38 +77,67 @@ def change_password():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM gebruikers WHERE email = ? AND wachtwoord = ?", (email, old_password))
+    cursor.execute("SELECT * FROM gebruikers WHERE naam = ?", (email,))
     user = cursor.fetchone()
 
-    if user:
-        cursor.execute("UPDATE gebruikers SET wachtwoord = ? WHERE email = ?", (new_password, email))
+    if user and check_password_hash(user[2], old_password):
+        hashed_new_password = generate_password_hash(new_password)
+        cursor.execute("UPDATE gebruikers SET wachtwoord = ? WHERE naam = ?", (hashed_new_password, email))
         conn.commit()
         conn.close()
-        return redirect(url_for('dashboard')) 
+        return redirect(url_for('dashboard'))
     else:
         conn.close()
         return "Incorrect current password. Try again."
 
 @app.route('/logout')
 def logout():
-    session.clear()  
+    session.clear()
     return redirect(url_for('login'))
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_login():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Check of de admin-account al bestaat
+    cursor.execute("SELECT * FROM gebruikers WHERE naam = 'admin'")
+    admin = cursor.fetchone()
+
+    if not admin:  # Als de admin nog niet bestaat
+        if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+
+            if username != 'admin':
+                return "De gebruikersnaam moet 'admin' zijn om toegang te krijgen tot de admin-pagina."
+
+            # Voeg de admin toe met gehashed wachtwoord
+            hashed_password = generate_password_hash(password)
+
+            cursor.execute("INSERT INTO gebruikers (naam, wachtwoord) VALUES (?, ?)", ('admin', hashed_password))
+            conn.commit()
+
+            print(f"Admin-account aangemaakt met gehasht wachtwoord: {hashed_password}")
+            return redirect(url_for('admin_dashboard'))  # Ga naar de admin dashboard
+
+        # Als de admin nog niet bestaat, toon een formulier om een admin-account aan te maken
+        return render_template('create_admin.html')
+
+    # Als de admin-account al bestaat, ga dan verder met het inlogproces
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
-        # Controleer admin-gegevens
-        if username == 'admin' and password == 'admin':
+        if username == 'admin' and check_password_hash(admin[2], password):
             session['admin'] = True
             return redirect(url_for('admin_dashboard'))
         else:
             return "Invalid admin credentials, try again."
+
     return render_template('admin_login.html')
 
-# Route voor het admin-dashboard
+
 @app.route('/admin/dashboard')
 def admin_dashboard():
     if not session.get('admin'):
@@ -119,24 +151,22 @@ def admin_dashboard():
 
     return render_template('admin_dashboard.html', users=users)
 
-# Route voor het wijzigen van wachtwoorden door de admin
 @app.route('/admin/change_password/<int:user_id>', methods=['POST'])
 def admin_change_password(user_id):
     if not session.get('admin'):
         return redirect(url_for('admin_login'))
 
     new_password = request.form['new_password']
+    hashed_new_password = generate_password_hash(new_password)
 
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    cursor.execute("UPDATE gebruikers SET wachtwoord = ? WHERE id = ?", (new_password, user_id))
+    cursor.execute("UPDATE gebruikers SET wachtwoord = ? WHERE id = ?", (hashed_new_password, user_id))
     conn.commit()
     conn.close()
 
     return redirect(url_for('admin_dashboard'))
 
-
-# Route voor het verwijderen van gebruikers
 @app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
     if not session.get('admin'):
@@ -150,7 +180,6 @@ def delete_user(user_id):
 
     return redirect(url_for('admin_dashboard'))
 
-# Admin logout
 @app.route('/admin/logout')
 def admin_logout():
     session.pop('admin', None)
